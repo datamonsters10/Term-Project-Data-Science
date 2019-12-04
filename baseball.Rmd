@@ -1,0 +1,389 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+hallOfFame <- read_csv("Baseball 1989-2019.csv",col_types = cols(Year = col_integer()))
+```
+
+```{r}
+hallOfFame[is.na(hallOfFame)] <- 0
+hallOfFame <- subset(hallOfFame, !(Name == "y Roger Clemens" | Name == "y Barry Bonds"))
+hallOfFame
+```
+```{r}
+hallOfFame$MadeIt <- as.factor(ifelse(hallOfFame$Pvote > 0.750, "Yes", "No"))
+
+```
+
+```{r}
+pitchers <- subset(hallOfFame, W > 0)
+pitchers
+```
+
+```{r}
+nonPitchers <- subset(hallOfFame, W == 0)
+nonPitchers
+```
+
+
+```{r}
+decade1 <- subset(nonPitchers,Year >= 1989 & Year <=  1999)
+decade1RMean <- mean(decade1$R)
+cat("Decade from 1989 to 1999 Non Pitchers Runs Mean", decade1RMean)
+cat("\n")
+decade1$Decade <- 1
+```
+
+```{r}
+decade2 <- subset(nonPitchers,Year >= 2000 & Year <=  2009)
+decade2RMean <- mean(decade2$R)
+cat("Decade from 2000 to 2009 Non Pitchers Runs Mean", decade2RMean)
+cat("\n")
+decade2$Decade <- 2
+```
+
+```{r}
+decade3 <- subset(nonPitchers,Year >= 2010 & Year <=  2019)
+decade3RMean <- mean(decade3$R)
+cat("Decade from 2000 to 2009 Non Pitchers Runs Mean", decade3RMean)
+cat("\n")
+decade3$Decade <- 3
+```
+
+```{r}
+t.test(decade1$R, decade3$R, paired = FALSE)
+
+cat("p-value < alpha (0.05). The null hypothesis is rejected.\n")
+cat("The mean Runs for Decade 1 and Decade 3 ARE significantly different.\n")
+```
+
+```{r}
+farDecades <- rbind(decade1, decade3)
+ggplot(data = farDecades, mapping = aes(x = Year, y = R)) +
+  geom_col(show.legend = FALSE) 
+```
+
+```{r}
+decadeN <- rbind(decade1, decade2)
+hallOfFameDecade <- rbind(decadeN, decade3)
+```
+
+```{r}
+anovaDecade <- aov(data = hallOfFameDecade, R ~ Decade)
+summary(anovaDecade)
+```
+```{r}
+ggplot(data = hallOfFameDecade, mapping = aes(x = Year, y = R)) +
+  geom_col(show.legend = FALSE)
+```
+
+
+```{r}
+decade1P <- subset(pitchers,Year >= 1989 & Year <=  1999)
+decade1PWAR <- mean(decade1P$SO)
+cat("Decade from 1989 to 1999 Pitchers Average WAR", decade1PWAR)
+cat("\n")
+decade1P$Decade <- 1
+```
+
+```{r}
+decade2P <- subset(pitchers,Year >= 2000 & Year <=  2009)
+decade2PWAR <- mean(decade2P$SO)
+cat("Decade from 2000 to 2009 Pitchers Average WAR", decade2PWAR)
+cat("\n")
+decade2P$Decade <- 2
+```
+
+```{r}
+decade3P <- subset(pitchers,Year >= 2010 & Year <=  2019)
+decade3PWAR <- mean(decade3P$SO)
+cat("Decade from 2000 to 2009 Pitchers Average WAR", decade3PWAR)
+cat("\n")
+decade3P$Decade <- 3
+```
+
+
+```{r}
+farDecadesP <- rbind(decade1P, decade3P)
+```
+
+```{r}
+decadeNP <- rbind(decade1P, decade2P)
+hallOfFameDecadeP <- rbind(decadeNP, decade3P)
+hallOfFameDecadeP
+```
+
+```{r}
+hallOfFameDecadeP$Decade <- as.factor(hallOfFameDecadeP$Decade) 
+anovaDecadeP <- aov(data = hallOfFameDecadeP, WAR ~ Decade)
+summary(anovaDecadeP)
+```
+
+```{r}
+TukeyHSD(anovaDecadeP)
+```
+
+```{r}
+ggplot(data = hallOfFameDecadeP, mapping = aes(x = Year, y = SO)) +
+  geom_col(show.legend = FALSE) 
+```
+
+###prediction regression analysis
+
+##non pitchers correlations
+
+#votes and hits
+```{r}
+votesHcorrelation <- cor(nonPitchers$Pvote, nonPitchers$H)
+votesHcorrelation
+```
+#votes and runs
+```{r}
+votesRcorrelation <- cor(nonPitchers$Pvote, nonPitchers$R)
+votesRcorrelation
+```
+#votes and WAR
+```{r}
+votesWARcorrelation <- cor(nonPitchers$Pvote, nonPitchers$WAR)
+votesWARcorrelation
+```
+##pitchers correlations
+
+#votes and strike outs
+```{r}
+votesSOcorrelation <- cor(pitchers$Pvote, pitchers$SO)
+votesSOcorrelation
+```
+#votes and WAR of Pitchers
+```{r}
+votesWARPcorrelation <- cor(pitchers$Pvote, pitchers$WAR)
+votesWARPcorrelation
+```
+
+##hypothesis testing
+#non pitchers
+```{r}
+nonPitchersHOF <- subset(nonPitchers, Pvote >= 0.750)
+nonPitchersNOHOF <- subset(nonPitchers, Pvote <= 0.750)
+t.test(nonPitchersHOF$H, nonPitchersNOHOF$H)
+t.test(nonPitchersHOF$R, nonPitchersNOHOF$R)
+t.test(nonPitchersHOF$WAR, nonPitchersNOHOF$WAR)
+
+cat("all p-values < alpha (0.05). The null hypothesis IS rejected.\n")
+cat("The mean of Hits, Runs and WAR of Hall of Famers and Not Hall Of Famers non Pitchers  ARE significantly different.\n")
+
+ggplot(data = nonPitchers, mapping = aes(x = H, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth()
+
+ggplot(data = nonPitchers, mapping = aes(x = R, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth()
+
+ggplot(data = nonPitchers, mapping = aes(x = WAR, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth()
+```
+
+#pitchers
+```{r}
+pitchersHOF <- subset(pitchers, Pvote >= 0.750)
+pitchersNOHOF <- subset(pitchers, Pvote <= 0.750)
+t.test(pitchersHOF$SO, pitchersNOHOF$SO)
+t.test(pitchersHOF$WAR, pitchersNOHOF$WAR)
+cat("all p-values < alpha (0.05). The null hypothesis IS rejected.\n")
+cat("The mean of Strike Outs and WAR of Hall of Famers and Not Hall Of Famers Pitchers  ARE significantly different.\n")
+
+ggplot(data = pitchers, mapping = aes(x = SO, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth()
+
+ggplot(data = pitchers, mapping = aes(x = WAR, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth()
+```
+
+##predictions
+#Non pitchers Model
+```{r}
+model1 <- lm(Pvote ~ H + WAR , data = nonPitchers)
+model1
+```
+
+#Freddie Lindstrom test and prediction  
+```{r}
+testFL <- data.frame(H = c(1747), WAR = c(28.3))
+
+predictedVoteFL <- predict(model1, testFL)
+cat("Freddie Lindstrom predicted vote percentage by Hits and WAR is", predictedVoteFL)
+```
+#Freddie Lindstrom Verification
+```{r}
+FLv <- subset(nonPitchers, H <= 2000 & H >= 1500 & WAR <= 35 & WAR >= 25)
+avgVotesFL <- mean(FLv$Pvote)
+avgVotesFL
+```
+
+
+#Bill Mazeroski test and prediction
+```{r}
+testBM <- data.frame(H = c(2016) ,WAR = c(30.9))
+
+predictedVoteBM <- predict(model1, testBM)
+cat("Bill Mazeroski predicted vote percentage by Hits and War is", predictedVoteBM)
+```
+
+#Bill Mazeroski Verification
+```{r}
+BMv <- subset(nonPitchers, H <= 2500 & H >= 2000 & WAR <= 35 & WAR >= 25)
+avgVotesBM <- mean(BMv$Pvote)
+avgVotesBM
+```
+
+#Pitchers Model
+```{r}
+model2 <- lm(Pvote ~ SO + WAR , data = pitchers)
+model2
+```
+
+#Gaylord Perry test and prediction
+```{r}
+testGP <- data.frame(SO = c(3534), WAR = c(90))
+
+predictedVoteGP <- predict(model2, testGP)
+cat("Gaylord Perry predicted votes percentage by Strike Outs and WAR is", predictedVoteGP)
+```
+
+#Gaylord Perry verification
+```{r}
+GPv <- subset(pitchers, SO <= 4000 & SO >= 3500 & WAR <= 100 & WAR >= 90)
+avgVotesGP <- mean(GPv$Pvote)
+avgVotesGP
+```
+
+#Dennis Eckersely test and prediction
+```{r}
+testDE <- data.frame(SO = c(2401), WAR = c(62))
+
+predictedVoteDE <- predict(model2, testDE)
+cat("Dennis Eckersely predicted votes percentage by Strike Outs and WAR is", predictedVoteDE)
+```
+
+#Dennis Eckersely verification
+```{r}
+DEv <- subset(pitchers, SO <= 2500 & SO >= 2000 & WAR <= 65 & WAR >= 55)
+avgVotesDE <- mean(DEv$Pvote)
+avgVotesDE
+```
+
+```{r}
+prediction <- read_csv("predictionHOF.csv")
+prediction
+```
+
+```{r}
+ggplot(data = prediction, mapping = aes(x = Name))+
+         geom_point(data = prediction, mapping = aes(y = ActualVotes), color = "blue")+
+  geom_point(data = prediction, mapping = aes(y = ActualVotes), color = "blue")+
+  geom_point(data = prediction, mapping = aes(y = Prediction), color = "red")+
+  geom_point(data = prediction, mapping = aes(y = Verification), color = "black")
+```
+
+```{r}
+library(Metrics)
+```
+
+```{r}
+mse <- mse(prediction$Prediction, prediction$Verification)
+mse
+```
+
+
+```{r}
+library(forecast)
+library(knitr)
+library(rmarkdown)
+```
+# pitchers
+```{r}
+
+xp <- group_by(pitchers, Year)%>%
+  summarise(SO = mean(SO))
+data123 <- ts(xp[,2], start = c(1989), frequency = 1)
+plot(data123)
+
+```
+```{r}
+train1 = window(data123, start = 1989, end = 2015)
+train1
+
+test1 = window(data123, start = 2011, end = 2019)
+```
+
+```{r}
+
+arimaModel1 <- auto.arima(train1)
+arimaForecast1 <-forecast(arimaModel1, h = 9)
+arimaForecast1
+```
+
+```{r}
+plot(arimaForecast1)
+```
+# Verification Pitchers
+```{r}
+arimaMean1 <-arimaForecast1$mean
+plot(test1, main = "AirPassengers", ylab = "Passengers", xlab = "Months", col = "darkblue")  
+lines(arimaMean1, col="red")
+```
+
+
+
+
+
+# Non pitchers
+```{r}
+#Non pitchers
+xd <- group_by(nonPitchers, Year)%>%
+  summarise(AVG = mean(H))
+data22 <- ts(xd[,2], start = c(1989), frequency = 1)
+
+train2 = window(data22, start = 1989, end = 2014)
+test2 = window(data22, start = 2015, end = 2019)
+```
+
+```{r}
+arimaModel2 <- auto.arima(train2)
+arimaForecast2 <-forecast(arimaModel2, h = 9)
+arimaForecast2
+```
+
+```{r}
+plot(arimaForecast2)
+```
+
+# Verfication
+```{r}
+
+arimaMean2 <-arimaForecast2$mean
+arimaMean2
+```
+
+```{r}
+
+plot(test2, main = "AirPassengers", ylab = "Passengers", xlab = "Months", col = "darkblue")  
+lines(arimaMean2, col="red")
+```
+
