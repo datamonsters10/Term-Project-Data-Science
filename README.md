@@ -28,54 +28,27 @@ Our team collected data about the hall of fame from different years starting in 
 
 The data was divided in different sub divisions throughout the project in order to perform different analyses. These divisions are explained in the project itself, so a clear understanding can be achieved.
 
-### Break down into end to end tests
 
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [RStudio](https://rstudio.com/) - The software used.
+* [R Language](https://cran.r-project.org/) - Programming language used.
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 
-* **Claudio Lupi** - *The Brains*
+* **Claudio Lupi** - *The Brain*
 * **Eduardo Reyna** - *The Muscle & Looks*
 * **Sebastian Calzadilla** - *The Soul*
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the STU License(Dpt. Of Science).
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* **Dr. Mondersire, S.** - *Spiritual guide*
+* **Max Frank** - Helped to correct code
+* **God** - *He was always there*
