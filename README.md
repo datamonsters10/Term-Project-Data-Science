@@ -1,9 +1,9 @@
 # Term-Project-Data-Science
-The best term project there will ever be.
+Term project based on the statistics of the players that were considered into the hall of fame.
 
 ## Motivation for this project
 
-When we started this project we were curious about how fair were the votations for the Baseball Hall of Fame. With this concept in mind we started gathering data and adjusting it for further analysis. We then perform multiple types of analysis such as: hypothesis testing, prediction (regression) analysis, classification,  time-series analysis, clustering, and finally verified them. We will present the conslusion that we found in this file.
+When we started this project we were curious about how fair were the votations for the Baseball Hall of Fame. With this concept in mind we started gathering data and adjusting it for further analysis. We then perform multiple types of analysis such as: hypothesis testing, prediction (regression) analysis, classification,  time-series analysis, clustering, and finally verified them. We will present the conslusion that we found in this repository.
 
 
 ## Prerequisites
