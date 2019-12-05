@@ -53,7 +53,8 @@ The following visualization shows pitchers' voting percentage for entering the h
 <details>
            <summary>Linear Regression prediction</summary>
            <p>
-             Comparison among the actual voting percentage, our model predicted percentage, and the trend predicted percentage.
+                      
+   Comparison among the actual voting percentage, our model predicted percentage, and the trend predicted percentage.
 
 ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz7.png?raw=true)
   </p>
@@ -61,7 +62,8 @@ The following visualization shows pitchers' voting percentage for entering the h
 <details>
            <summary>Classification</summary>
            <p>
-             Non pitchers decision tree. It states if they made it to the hall of fame depending on a statistic.
+  
+  Non pitchers decision tree. It states if they made it to the hall of fame depending on a statistic.
              
 ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz8.png?raw=true)
   Pitchers decision tree. It states if they made it to the hall of fame depending on a statistic.
@@ -71,6 +73,7 @@ The following visualization shows pitchers' voting percentage for entering the h
 <details>
            <summary>Times series analysis</summary>
            <p>
+  
   Prediction for next years candidates' average strike outs according to our time series analysis.
              
  ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz12.png?raw=true)
@@ -85,6 +88,7 @@ The following visualization shows pitchers' voting percentage for entering the h
 <details>
            <summary>Clustering</summary>
            <p>
+  
   Clustering analysis that demonstrates the difference in statistics between pitchers and non pitchers. It shows that both classes have similar cluster even though there is a difference in the quantity of each class.
   
   ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz18.png?raw=true)
