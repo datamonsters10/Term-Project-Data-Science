@@ -36,6 +36,60 @@ Our team collected data about the hall of fame from different years starting in 
 
 The data was divided in different sub divisions throughout the project in order to performhypothesis testing, prediction (regression) analysis, classification,  time-series analysis, clustering, and finally verified them. These divisions are explained in the project itself, so a clear understanding can be achieved.
 
+### Vizualizations
+These are some vizulization that were obtained from our anlysis. they will provide a summary of what our conclusions were.
+
+<details>
+           <summary>Hypothesis testing</summary>
+           <p>
+         
+The following vizualitions shows non pitchers' voting percetange for entering the hall of fame, according to their hits. Also, it states if they made it to the hall of fame or not.
+![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz1.png?raw=true)
+
+The following vizualitions shows pitchers' voting percetange for entering the hall of fame, according to their Strikes Out. Also, it states if they made it to the hall of fame or not.
+![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz4.png?raw=true)
+</p>
+</details>
+<details>
+           <summary>Linear Regression prediction</summary>
+           <p>
+             Comparasion among the actual voting percentage, our model predicted percentage, and the trend predicted percentage.
+
+![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz7.png?raw=true)
+  </p>
+         </details>
+<details>
+           <summary>Classification</summary>
+           <p>
+             Non pitchers desicion tree. It states if they made it to the hall of fame depending on a statistic.
+             
+![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz8.png?raw=true)
+  Pitchers desicion tree. It states if they made it to the hall of fame depending on a statistic.
+             ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz9.png?raw=true)
+  </p>
+</details>
+<details>
+           <summary>Times series analysis</summary>
+           <p>
+  Prediction for next years candidates' average strike outs according to our time series analysis.
+             
+ ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz12.png?raw=true)
+             
+  Prediction for next years candidates' average hits according to our time series analysis.
+             
+  ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz15.png?raw=true)
+   
+  As shown, this analysis couldn't be properly perform due to our data.
+  </p>
+         </details>
+<details>
+           <summary>Clustering</summary>
+           <p>
+  Clustering analysis that demonstrates the difference in statistics between pitchers and non pitchers. It shows that both classes have similar cluster even though there is a difference in the quantity of each class.
+  
+  ![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz18.png?raw=true)
+  </p>
+         </details>
 
 ## Authors
 
@@ -47,12 +101,10 @@ The data was divided in different sub divisions throughout the project in order 
 ## License
 
 This project is licensed under the STU License(Dpt. Of Science).
-
+![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz1.png?raw=true)
 ## Acknowledgments
 
 * **Dr. Mondersire, S.** - *Spiritual guide*
 * **Max Frank** - Helped to correct code
 * **God** - *He was always there*
 
-
-![alt text](https://s.yimg.com/ny/api/res/1.2/QTtWAyZBu_GDIPVf5X6sWw--~A/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9ODAw/http://media.zenfs.com/en-GB/homerun/uk.goal.com/6d7b593804b11b559f0276004d032d4d)
