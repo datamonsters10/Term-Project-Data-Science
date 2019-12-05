@@ -1,0 +1,533 @@
+---
+title: "Term Project"
+output: html_notebook
+
+---
+
+
+# Data  Monsters Hall Of Fame Considerations Project {.tabset .tabset-fade .tabset-pills}
+
+
+
+
+ How does the MLB choose players to get into the Hall Of Fame? The objective of this project is to see the analytics behind the ballots. What do the voters take into consideration? If game stadistics affect the voting? Which top new candidates are going to make it, are they pitchers or non pitchers? 
+
+
+
+## Data Preparation
+
+### Install and load Tidyverse library
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+
+```
+
+### Dataset reading
+```{r}
+hallOfFame <- read_csv("Baseball 1989-2019.csv",col_types = cols(Year = col_integer()))
+```
+
+### State NA as 0
+```{r}
+hallOfFame[is.na(hallOfFame)] <- 0
+hallOfFame <- subset(hallOfFame, !(Name == "y Roger Clemens" | Name == "y Barry Bonds"))
+hallOfFame
+```
+### Create a column that tells which players entered into the Hall Of Fame: Yes or No 
+```{r}
+hallOfFame$MadeIt <- as.factor(ifelse(hallOfFame$Pvote > 0.750, "Yes", "No"))
+```
+### Create a subset that just selects the Pitchers 
+```{r}
+pitchers <- subset(hallOfFame, W > 0, col_types = cols(BA = col_integer(), HR = col_integer(), R = col_integer()))
+pitchers
+```
+### Create a subset that just selects the Non Pitchers 
+```{r}
+nonPitchers <- subset(hallOfFame, W == 0)
+```
+
+## Hypothesis Testing
+
+### Create correlations of some of the most important stadistics for all players positions in baseball 
+
+### Votes and Hits correlation
+```{r}
+votesHcorrelation <- cor(nonPitchers$Pvote, nonPitchers$H)
+votesHcorrelation
+cat("The correlation between votes and hits is", votesHcorrelation)
+```
+### Votes and Runs correlation
+```{r}
+votesRcorrelation <- cor(nonPitchers$Pvote, nonPitchers$R)
+votesRcorrelation
+cat("The correlation between votes and runs is", votesRcorrelation)
+```
+### Votes and WAR correlation
+```{r}
+votesWARcorrelation <- cor(nonPitchers$Pvote, nonPitchers$WAR)
+votesWARcorrelation
+cat("The correlation between votes and WAR is", votesWARcorrelation)
+```
+
+### Votes and Strike Outs correlation
+```{r}
+votesSOcorrelation <- cor(pitchers$Pvote, pitchers$SO)
+votesSOcorrelation
+cat("The correlation between votes and Strike Outs is", votesSOcorrelation)
+```
+### Votes and WAR of Pitchers correlation
+```{r}
+votesWARPcorrelation <- cor(pitchers$Pvote, pitchers$WAR)
+votesWARPcorrelation
+cat("The correlation between votes and WAR of pitchers is", votesWARPcorrelation)
+```
+
+### Hypothesis testing for non pitchers
+```{r}
+nonPitchersHOF <- subset(nonPitchers, Pvote >= 0.750)
+nonPitchersNOHOF <- subset(nonPitchers, Pvote <= 0.750)
+t.test(nonPitchersHOF$H, nonPitchersNOHOF$H)
+t.test(nonPitchersHOF$WAR, nonPitchersNOHOF$WAR)
+t.test(nonPitchersHOF$JAWS, nonPitchersNOHOF$WAR)
+
+cat("all p-values < alpha (0.05). The null hypothesis IS rejected.\n")
+cat("The mean of Hits, Runs and WAR of Hall of Famers and Not Hall Of Famers non Pitchers  ARE significantly different.")
+
+ggplot(data = nonPitchers, mapping = aes(x = H, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth(method = "loess") +
+   labs(title = "Non Pitchers Hits Vs  Percentages Vote", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "Hits", y = "Percentage Vote")
+
+ggplot(data = nonPitchers, mapping = aes(x = WAR, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Non Pitchers WAR Vs  Percentages Vote", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "WAR", y = "Percentage Vote")
+
+ggplot(data = nonPitchers, mapping = aes(x = JAWS, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Non Pitchers JAWS Vs  Percentages Vote", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "JAWS", y = "Percentage Vote")
+```
+
+### Hypothesis testing pitchers
+```{r}
+pitchersHOF <- subset(pitchers, Pvote >= 0.750)
+pitchersNOHOF <- subset(pitchers, Pvote <= 0.750)
+t.test(pitchersHOF$SO, pitchersNOHOF$SO)
+t.test(pitchersHOF$WAR, pitchersNOHOF$WAR)
+cat("all p-values < alpha (0.05). The null hypothesis IS rejected.\n")
+cat("The mean of Strike Outs and WAR of Hall of Famers and Not Hall Of Famers Pitchers are significantly different.")
+
+ggplot(data = pitchers, mapping = aes(x = SO, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Pitchers Strike Outs Vs  Percentages Vote", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "Strike Outs", y = "Percentage Vote")
+
+ggplot(data = pitchers, mapping = aes(x = WAR, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Pitchers WAR Vs  Percentages Vote", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "WAR", y = "Percentage Vote")
+
+ggplot(data = pitchers, mapping = aes(x = JAWS, y = Pvote, color = MadeIt)) +
+         geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Pitchers JAWS Vs  Percentages Vote", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "JAWS", y = "Percentage Vote")
+```
+
+## Linear Regression Prediction
+### Non pitchers Model
+```{r}
+model1 <- lm(Pvote ~ H + WAR , data = nonPitchers)
+model1
+```
+
+### Freddie Lindstrom test and prediction  
+```{r}
+testFL <- data.frame(H = c(1747), WAR = c(28.3))
+
+predictedVoteFL <- predict(model1, testFL)
+cat("Freddie Lindstrom predicted vote percentage by Hits and WAR is", predictedVoteFL)
+```
+### Freddie Lindstrom Verification
+```{r}
+FLv <- subset(nonPitchers, H <= 2000 & H >= 1500 & WAR <= 35 & WAR >= 25)
+avgVotesFL <- mean(FLv$Pvote)
+avgVotesFL
+```
+
+
+### Bill Mazeroski test and prediction
+```{r}
+testBM <- data.frame(H = c(2016) ,WAR = c(30.9))
+
+predictedVoteBM <- predict(model1, testBM)
+cat("Bill Mazeroski predicted vote percentage by Hits and War is", predictedVoteBM)
+```
+
+### Bill Mazeroski Verification
+```{r}
+BMv <- subset(nonPitchers, H <= 2500 & H >= 2000 & WAR <= 35 & WAR >= 25)
+avgVotesBM <- mean(BMv$Pvote)
+avgVotesBM
+```
+
+### Pitchers Model
+```{r}
+model2 <- lm(Pvote ~ SO + WAR , data = pitchers)
+model2
+```
+
+### Gaylord Perry test and prediction
+```{r}
+testGP <- data.frame(SO = c(3534), WAR = c(90))
+
+predictedVoteGP <- predict(model2, testGP)
+cat("Gaylord Perry predicted votes percentage by Strike Outs and WAR is", predictedVoteGP)
+```
+
+### Gaylord Perry verification
+```{r}
+GPv <- subset(pitchers, SO <= 4000 & SO >= 3500 & WAR <= 100 & WAR >= 90)
+avgVotesGP <- mean(GPv$Pvote)
+avgVotesGP
+```
+
+### Dennis Eckersely test and prediction
+```{r}
+testDE <- data.frame(SO = c(2401), WAR = c(62))
+
+predictedVoteDE <- predict(model2, testDE)
+cat("Dennis Eckersely predicted votes percentage by Strike Outs and WAR is", predictedVoteDE)
+```
+
+### Dennis Eckersely verification
+```{r}
+DEv <- subset(pitchers, SO <= 2500 & SO >= 2000 & WAR <= 65 & WAR >= 55)
+avgVotesDE <- mean(DEv$Pvote)
+avgVotesDE
+```
+### Prediction new Data Frame
+```{r}
+prediction <- read_csv("predictionHOF.csv")
+```
+### Actual, Prediction and Verification graphic
+```{r}
+ggplot(data = prediction, mapping = aes(x = Name))+
+  geom_col(data = prediction, mapping = aes(y = ActualVotes, fill = ActualVotes),show.legend = FALSE)+
+  geom_col(data = prediction, mapping = aes(y = Prediction, fill = Prediction),show.legend = FALSE)+
+  geom_col(data = prediction, mapping = aes(y = Verification, fiLL = Verification),show.legend = FALSE)+
+  coord_flip()+
+   labs(title = "Actual, Predicted and Verified", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "Player", y = "Percentage Vote") 
+```
+### Linear Regression Error
+### Metrics Library
+```{r}
+install.packages("Metrics")
+library(Metrics)
+```
+### Mean Squared Error
+```{r}
+mse <- mse(prediction$Prediction, prediction$Verification)
+cat("Mean Squared Error:", mse)
+```
+
+## Classification
+### Install Party Library
+```{r}
+install.packages("party")
+library(party)
+```
+
+### Perform a Non Pitchers Data Split
+```{r}
+nonPitchers
+library(caTools)
+
+set.seed(1234) 
+
+sample1 = sample.split(nonPitchers$Name, SplitRatio = .75)
+train1 = subset(nonPitchers, sample1 == TRUE)
+test1  = subset(nonPitchers, sample1 == FALSE)
+```
+
+### Non pitchers decision Tree
+```{r}
+tree1 <- ctree(MadeIt ~ WAR + JAWS, data = train1)
+plot(tree1) 
+```
+### Derek Jeter test
+```{r}
+testJeter <- data.frame(WAR = 72.8, JAWS = 57.4)
+predictionJeter <- predict(tree1, testJeter)
+cat("Jeter Hall of Famer ?",  as.character(predictionJeter))
+```
+### Torii Hunter test
+```{r}
+testHunter <- data.frame(WAR = 50.1	, JAWS = 40.4)
+predictionHunter <- predict(tree1, testHunter)
+cat("Hunter Hall of Famer ?",  as.character(predictionHunter))
+```
+### Alex Rodriguez test
+```{r}
+testRodriguez <- data.frame(WAR = 117.8, JAWS = 91.0)
+predictionRodriguez <- predict(tree1, testRodriguez)
+cat("Rodriguez Hall of Famer ?",  as.character(predictionRodriguez))
+```
+### David Ortiz test
+```{r}
+testOrtiz <- data.frame(WAR = 55.3, JAWS = 45.2	)
+predictionOrtiz <- predict(tree1, testOrtiz)
+cat("Ortiz Hall of Famer ?",  as.character(predictionOrtiz))
+```
+### Pitchers Data Split
+```{r}
+set.seed(1234)
+
+sample2 = sample.split(pitchers$Name, SplitRatio = .75)
+train2 = subset(pitchers, sample2 == TRUE)
+test2  = subset(pitchers, sample2 == FALSE)
+```
+
+
+### Pitchers decision Tree
+```{r}
+tree2 <- ctree(MadeIt ~ WAR + JAWS, data = train2)
+plot(tree2)
+```
+### Clif Lee test
+```{r}
+testLee <- data.frame(WAR = 43.5, JAWS = 41.6)
+predictionLee <- predict(tree2, testLee)
+cat("Lee Hall of Famer ?",  as.character(predictionLee))
+```
+### Tim Hudson test
+```{r}
+testHudson <- data.frame(WAR = 58.1, JAWS = 48.2)
+predictionHudson <- predict(tree2, testHudson)
+cat("Hudson Hall of Famer ?",  as.character (predictionHudson))
+```
+### Jake Peavy test
+```{r}
+testPeavy <- data.frame(WAR = 39.6, JAWS = 35.2)
+predictionPeavy <- predict(tree2, testPeavy)
+cat("Peavy Hall of Famer ?",  as.character (predictionPeavy))
+```
+
+### John Lackey Test
+```{r}
+testLackey <- data.frame(WAR = 37.6, JAWS = 33.5)
+predictionLackey <- predict(tree2, testLackey)
+cat("Lackey Hall of Famer ?",  as.character(predictionLackey))
+```
+
+### Classification New Dataset
+```{r}
+classification <- read_csv("WAR-JAWS-MADEIT.csv")
+classification1 <- na.omit(classification)
+```
+
+### Classification visualization
+```{r}
+ggplot(data = classification1, mapping = aes(x = WAR, y = JAWS, color = MadeIt))+
+  geom_point(size = 5)+
+  geom_text(aes(label  = Name),color = "Black", size = 3, position = "stack") +
+  xlim(25,125) +
+  ylim(25,91) +
+    labs(title = "WAR VS JAWS", subtitle = "Top Non Pitchers and Pitchers Entrees of 2020-2023 Ballots", x = "WAR", y = "JAWS")
+```
+
+## Time Series
+
+### Install Forecast, Knitr and RMarkdown Libraries
+```{r}
+install.packages("forecast")
+install.packages("knitr")
+install.packages("rmarkdown")
+library(forecast)
+library(knitr)
+library(rmarkdown)
+
+```
+
+### Pitchers Year SO Data by Year. Training and Testing
+```{r}
+
+xp <- group_by(pitchers, Year)%>%
+  summarise(SO = mean(SO))
+data123 <- ts(xp[,2], start = c(1989), frequency = 1)
+plot(data123, main = "Average Strike outs per Year", ylab = "Strike outs", xlab = "Year", col = "darkblue")
+
+traints = window(data123, start = 1989, end = 2014)
+
+
+testts = window(data123, start = 2015, end = 2019)
+```
+
+### Pitchers Arima Model
+```{r}
+arimaModel1 <- auto.arima(traints)
+arimaForecast1 <-forecast(arimaModel1, h = 5)
+arimaForecast1
+```
+
+### Visualization 1 Pitchers
+```{r}
+plot(arimaForecast1, main = "Forecast Future Average Strike outs per Year", ylab = "Strike outs", xlab = "Year", col = "darkblue")
+```
+
+### Visualization 2 Pitchers
+```{r}
+plot(testts, main = "Real data vs Predicted data of Strikeout", ylab = "Average Strikeouts", xlab = "Year", col = "darkblue")  
+lines(arimaForecast1$mean, col="red")
+legend("topright", lty = 1, bty = "n", col = c("red","blue"), c("Actual","Predicted"))
+```
+### The Accuracy of Pitchers is
+```{r}
+accuracy(arimaForecast1, testts)
+```
+
+
+
+
+### Non pitchers Data and graphs
+```{r}
+#Non pitchers
+xd <- group_by(nonPitchers, Year)%>%
+  summarise(AVG = mean(H))
+data22 <- ts(xd[,2], start = c(1989), frequency = 1)
+
+plot(data22, main = "Average Hits per Year", ylab = "Average Hits", xlab = "Year", col = "darkblue")
+
+traints2 = window(data22, start = 1989, end = 2014)
+testts2 = window(data22, start = 2015, end = 2019)
+
+```
+
+### NonPitchers Arima Model
+```{r}
+arimaModel2 <- auto.arima(traints2)
+arimaForecast2 <-forecast(arimaModel2, h = 5)
+arimaForecast2
+```
+
+###  Visualization 1 Non Pitchers
+```{r}
+plot(arimaForecast2, main = "Prediction of Average Hits per Year", ylab = "Average Hits", xlab = "Year", col = "darkblue")
+```
+
+### Visualization 2 Non Pitchers
+
+```{r}
+
+plot(testts2, main = "Real data vs Predicted data of Hits", ylab = "Average Hits", xlab = "Year", col = "darkblue")  
+lines(arimaForecast2$mean, col="red")
+legend("topleft", lty = 1, bty = "n", col = c("red","blue"), c("Actual","Predicted"))
+```
+### The Accuracy of Non Pitchers is
+```{r}
+accuracy(arimaForecast2, testts2)
+```
+
+
+
+## Clustering
+```{r}
+pitchers$Pos  <- as.character("Pitchers")
+nonPitchers$Pos <- as.character("Non Pitchers")
+hallOfFame1 <- rbind(pitchers, nonPitchers)
+```
+
+###  WAR Vs JAWS Data Frame
+```{r}
+ggplot(data = hallOfFame1, mapping = aes(WAR, JAWS, color = Pos)) +
+  geom_point() +
+  labs(title = "WAR VS JAWS",  subtitle = "Hall Of Fame 1989-2019 Ballot", x = "WAR", y = "JAWS")
+```
+
+### Hall of Fame WAR and JAWS dataframe
+```{r}
+set.seed(20)
+ 
+stats <- data.frame(WAR = hallOfFame1$WAR, JAWS = hallOfFame1$JAWS)
+stats
+```
+
+### Kmeans WAR and Jaws with 2 Clusters
+```{r}
+statscluster <- kmeans(stats, 2, nstart = 25)
+statscluster
+```
+### 2 Clusters Pitchers and Non Pitchers
+```{r}
+table(statscluster$cluster, hallOfFame1$Pos)
+```
+
+### 2 Clusters Visualization
+```{r}
+hallOfFame1$cluster <- as.factor(statscluster$cluster)
+hallOfFame1$Pos <- as.factor(hallOfFame1$Pos)
+
+centroids <- as.data.frame(statscluster$centers)
+centroids$cluster <- as.factor(c(1:2))
+
+ggplot() +
+  geom_point(data = hallOfFame1, mapping = aes(x = WAR, y = JAWS, color = cluster, shape = Pos)) +
+   geom_point(data = centroids, aes(x = WAR, y = JAWS), size = 20, shape = 13)+
+  labs(title = "", x = "", y = "") + 
+  facet_wrap(~Pos, nrow = 1) +
+    labs(title = "2 Cluster for Non Pitchers and Pitchers", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "WAR", y = "JAWS")
+  
+```
+
+### 2 Clusters WSS
+```{r}
+wss <- numeric(15)
+for (k in 1:15) 
+  wss[k] = sum(kmeans(stats, k, nstart = 25) $withinss)
+
+```
+
+### 2 Clusters WSS Results
+```{r}
+
+wssResults <- data.frame(k = c(1:15), wss = wss)
+wssResults
+```
+
+### Ideal Clusters
+```{r}
+
+ggplot(data = wssResults, mapping = aes(x = k, y = wss)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "K mean: Hall Of Fame", x = "Number of Clusters k", y = "within sum of squares")
+```
+
+### Kmeans WAR and Jaws with 4 Clusters
+```{r}
+statscluster2 <- kmeans(stats, 4, nstart = 25)
+statscluster2
+```
+### 4 Clusters Pitchers and Non Pitchers
+```{r}
+table(statscluster2$cluster, hallOfFame1$Pos)
+```
+
+### 4 Clusters Visualization
+```{r}
+hallOfFame1$cluster2 <- as.factor(statscluster2$cluster)
+
+centroids2 <- as.data.frame(statscluster2$centers)
+centroids2$cluster <- as.factor(c(1:4))
+ 
+ggplot(data = hallOfFame1) +
+  geom_point(mapping = aes(x = WAR, y = JAWS, color = cluster2, shape = Pos)) +
+   geom_point(data = centroids2, aes(x = WAR, y = JAWS), size = 20, shape = 13)+
+  labs(title = "", x = "", y = "") +
+  facet_wrap(~Pos, nrow = 1) +
+  labs(title = "4 Cluster for Non Pitchers and Pitchers", subtitle = "Hall Of Fame 1989 to 2019 Ballots", x = "WAR", y = "JAWS")
+```
+
+### The results we gathered showes us that the MLB Hall Of Fame is not close to be decided by pure stadistics, since it does not follow a specific trend for voting. 
