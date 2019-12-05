@@ -1,15 +1,13 @@
 # Term-Project-Data-Science
 The best term project there will ever be.
-One Paragraph of project description goes here
 
 ## Motivation for this project
 
 When we started this project we were curious about how fair were the votations for the Baseball Hall of Fame. With this concept in mind we started gathering data and adjusting it for further analysis. We then perform multiple types of analysis such as: hypothesis testing, prediction (regression) analysis, classification,  time-series analysis, clustering, and finally verified them. We will present the conslusion that we found in this file.
 
 ### Prerequisites
-
-The Libraries that are require for the R project to work are:
-
+This project was made in the R language, utilizing RStudio.
+The Libraries that are require for this R project to properly run are:
 
 ```
 library(tidyverse)
@@ -22,21 +20,9 @@ library(Metrics)
 
 ### Gathering the data
 
-A step by step series of examples that tell you how to get a development env running
+The data for this project was gathered from the webpage [Baseball refence](https://www.baseball-reference.com/awards/awards_2018.shtml).
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+Our team collected data about the hall of fame from different years starting in 1989 through 2019. All the different years were then summarized into one data frame.
 
 ## Running the tests
 
