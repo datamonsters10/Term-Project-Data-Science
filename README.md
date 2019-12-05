@@ -101,7 +101,6 @@ The following vizualitions shows pitchers' voting percetange for entering the ha
 ## License
 
 This project is licensed under the STU License(Dpt. Of Science).
-![alt text](https://github.com/datamonsters10/Term-Project-Data-Science/blob/master/Project%20Graphs/Viz1.png?raw=true)
 ## Acknowledgments
 
 * **Dr. Mondersire, S.** - *Spiritual guide*
