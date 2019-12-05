@@ -24,9 +24,9 @@ The data for this project was gathered from the webpage [Baseball refence](https
 
 Our team collected data about the hall of fame from different years starting in 1989 through 2019. All the different years were then summarized into one data frame.
 
-## Running the tests
+## Anlysis on the data
 
-Explain how to run the automated tests for this system
+The data was divided in different sub divisions throughout the project in order to perform different analyses. These divisions are explained in the project itself, so a clear understanding can be achieved.
 
 ### Break down into end to end tests
 
@@ -64,7 +64,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Claudio Lupi** - *The Brains*
+* **Eduardo Reyna** - *The Muscle & Looks*
+* **Sebastian Calzadilla** - *The Soul*
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
